@@ -105,22 +105,25 @@ async def qa_method(message: types.Message):
     # 3 - text
     # 4 - forwarded_message_id
     # получение из бд сообщения когда-то отправленного пользователем
-    user_message = cursor.execute(
-        f"SELECT * FROM requests WHERE forwarded_message_id = '{message.reply_to_message.message_id}'").fetchall()[0]
-    chat_id = user_message[0]
-    text = user_message[3]
-    forwarded_message_id = user_message[4]
-    if text == ":OnlyPicture:":
-        text = "[Фото]"
+    try:
+        user_message = cursor.execute(
+            f"SELECT * FROM requests WHERE forwarded_message_id = '{message.reply_to_message.message_id}'").fetchall()[0]
+        chat_id = user_message[0]
+        text = user_message[3]
+        forwarded_message_id = user_message[4]
+        if text == ":OnlyPicture:":
+            text = "[Фото]"
 
-    # отправка пользователю ответа
-    await bot.send_message(chat_id,
-                           f"> {text}\n\n"
-                           f"{message.text}")
+        # отправка пользователю ответа
+        await bot.send_message(chat_id,
+                               f"> {text}\n\n"
+                               f"{message.text}")
 
-    # удаление из бд сообщения когда-то отправленного пользователем
-    cursor.execute(f"DELETE FROM requests WHERE forwarded_message_id = '{forwarded_message_id}'")
-    connection.commit()
+        # удаление из бд сообщения когда-то отправленного пользователем
+        cursor.execute(f"DELETE FROM requests WHERE forwarded_message_id = '{forwarded_message_id}'")
+        connection.commit()
+    except Exception:
+        return
 
 
 # ====================== Получение картинки ======================
