@@ -134,9 +134,9 @@ async def photo_receiver(message: types.Message):
     # если админ отправит картинку боту в лс, то она тоже заигнорится
     if not is_admin(message):
         # сохранение фотки
-        await message.photo[-1].download("D:\\tempProjects\\python\\AbitIsSupportBot\\temp.jpg")
-        # await message.photo[-1].download("/home/dtitov/diabet-diary-bot/jsons/temp.jpg")
-        photo = open("temp.jpg", "rb")
+        # await message.photo[-1].download("D:\\tempProjects\\python\\AbitIsSupportBot\\temp.jpg")
+        await message.photo[-1].download("/home/dtitov/abit-IS-support-bot/temp.jpg")
+        photo = open("/home/dtitov/abit-IS-support-bot/temp.jpg", "rb")
         text_answer = f"————— Обращение —————\n" \
                       f"От: @{message.from_user.username}\n"
         caption = ":OnlyPicture:"
