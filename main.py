@@ -80,7 +80,7 @@ async def qa_method(message: types.Message):
     # log(message)
 
     # ====================== User message receiver ======================
-    if not is_admin(message):
+    if not is_admin(message) and (message.from_user.id == message.chat.id):
         text_answer = f"————— Обращение —————\n" \
                       f"От: @{message.from_user.username}\n" \
                       f"————————————————\n" \
@@ -136,7 +136,7 @@ async def photo_receiver(message: types.Message):
         return
 
     # если админ отправит картинку боту в лс, то она тоже заигнорится
-    if not is_admin(message):
+    if not is_admin(message) and (message.from_user.id == message.chat.id):
         # сохранение фотки
         # await message.photo[-1].download("D:\\tempProjects\\python\\AbitIsSupportBot\\temp.jpg")
         await message.photo[-1].download("/home/dtitov/abit-IS-support-bot/temp.jpg")
