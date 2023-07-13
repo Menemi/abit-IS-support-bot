@@ -24,9 +24,10 @@ def is_admin(message: types.Message):
     connection = sqlite3.connect(path_to_db)
     cursor = connection.cursor()
 
-    admins = cursor.execute("SELECT tg_id FROM admins").fetchall()[0]
-    if admins.__contains__(str(message.from_user.id)):
-        return True
+    admins = cursor.execute("SELECT tg_id FROM admins").fetchall()
+    for admin in admins:
+        if admin[0] == str(message.from_user.id):
+            return True
     return False
 
 
