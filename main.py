@@ -46,6 +46,10 @@ def insert_message_in_db(message: types.Message, forwarded_message_id, text=":On
 
 @dp.message_handler(commands=["start"])
 async def start(message: types.Message):
+    await message.answer("Уважаемый будущий коллега, добрый день!\n"
+                         "Перед обращением в поддержку по поводу вступления в чат потока, убедись, что сообщение для бота в правильном формате:\n"
+                         "<code>/join Гослинг 1337</code>, где <code>Гослинг</code> - исключительно фамилия, а <code>1337</code> – последние 4 цифры паспорта",
+                         parse_mode="HTML")
     return
 
 
@@ -59,7 +63,8 @@ async def add_admin(message: types.Message):
     # проверка, что у команды два аргумента (tg_id и username)
     args = message.get_args().split(" ")
     if len(args) != 2:
-        await message.answer("Нужно ввести 2 аргумента: <code>{tg id}</code> <code>{username}</code>")
+        await message.answer("Нужно ввести 2 аргумента: <code>{tg id}</code> <code>{username}</code>",
+                             parse_mode="HTML")
         return
 
     connection = sqlite3.connect(path_to_db)
@@ -108,7 +113,8 @@ async def qa_method(message: types.Message):
     # получение из бд сообщения когда-то отправленного пользователем
     try:
         user_message = cursor.execute(
-            f"SELECT * FROM requests WHERE forwarded_message_id = '{message.reply_to_message.message_id}'").fetchall()[0]
+            f"SELECT * FROM requests WHERE forwarded_message_id = '{message.reply_to_message.message_id}'").fetchall()[
+            0]
         chat_id = user_message[0]
         text = user_message[3]
         forwarded_message_id = user_message[4]
