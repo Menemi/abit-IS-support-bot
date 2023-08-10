@@ -87,7 +87,7 @@ async def qa_method(message: types.Message):
     # ====================== User message receiver ======================
     if not is_admin(message) and (message.from_user.id == message.chat.id):
         text_answer = f"————— Обращение —————\n" \
-                      f"От: @{message.from_user.username}\n" \
+                      f"От: @{message.from_user.username}; {message.from_user.id}\n" \
                       f"————————————————\n" \
                       f"{message.text}"
 
