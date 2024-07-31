@@ -4,7 +4,7 @@ import sqlite3
 import datetime
 from aiogram import Bot, Dispatcher, executor, types
 
-from config import token, menemi, admin_chat, path_to_db
+from config import token, superuser, admin_chat, path_to_db, start_message, add_admin_requirements_message, path_to_photo
 
 logging.basicConfig(level=logging.INFO)
 
@@ -46,25 +46,21 @@ def insert_message_in_db(message: types.Message, forwarded_message_id, text=":On
 
 @dp.message_handler(commands=["start"])
 async def start(message: types.Message):
-    await message.answer("Уважаемый будущий коллега, добрый день!\n"
-                         "Перед обращением в поддержку по поводу вступления в чат потока, убедись, что сообщение для бота в правильном формате:\n"
-                         "<code>/join Гослинг 1337</code>, где <code>Гослинг</code> - исключительно фамилия, а <code>1337</code> – последние 4 цифры паспорта",
-                         parse_mode="HTML")
+    await message.answer(start_message, parse_mode="HTML")
     return
 
 
 # ====================== Добавление нового админа ======================
 @dp.message_handler(commands=["addadmin"])
 async def add_admin(message: types.Message):
-    # проверка, если команду выполняю не Я, то игнорится
-    if message.from_user.id != menemi:
+    # проверка, если команду выполняю не СУПЕРЮЗЕР, то игнорится
+    if message.from_user.id != superuser:
         return
 
     # проверка, что у команды два аргумента (tg_id и username)
     args = message.get_args().split(" ")
     if len(args) != 2:
-        await message.answer("Нужно ввести 2 аргумента: <code>{tg id}</code> <code>{username}</code>",
-                             parse_mode="HTML")
+        await message.answer(add_admin_requirements_message, parse_mode="HTML")
         return
 
     connection = sqlite3.connect(path_to_db)
@@ -145,10 +141,10 @@ async def photo_receiver(message: types.Message):
     if not is_admin(message) and (message.from_user.id == message.chat.id):
         # сохранение фотки
         # await message.photo[-1].download("D:\\tempProjects\\python\\AbitIsSupportBot\\temp.jpg")
-        await message.photo[-1].download("/home/dtitov/abit-IS-support-bot/temp.jpg")
-        photo = open("/home/dtitov/abit-IS-support-bot/temp.jpg", "rb")
+        await message.photo[-1].download(path_to_photo)
+        photo = open(path_to_photo, "rb")
         text_answer = f"————— Обращение —————\n" \
-                      f"От: @{message.from_user.username}\n"
+                      f"От: @{message.from_user.username}; {message.from_user.id}\n"
         caption = ":OnlyPicture:"
 
         if message.caption is not None:
